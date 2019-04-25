@@ -10,9 +10,6 @@
     "extra": {
         "description_ru": "Универсальный каталог"
     },
-    "require": {
-        "smart-core/media-bundle": "dev-master"
-    },
     "autoload": {
         "psr-4": { "Monolith\\Module\\Unicat\\": "" }
     }
