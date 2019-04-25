@@ -1,0 +1,242 @@
+<link href="{{ asset('bundles/unicatmodule/shortfu/fine-uploader-gallery.min.css') }}" rel="stylesheet">
+<script src="{{ asset('bundles/unicatmodule/shortfu/fine-uploader.min.js') }}"></script>
+<script type="text/template" id="qq-template_{{ id }}">
+    <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
+        <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+        </div>
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+            <span class="qq-upload-drop-area-text-selector"></span>
+        </div>
+        <div class="qq-upload-button-selector qq-upload-button" style="margin-right: 10px">
+            <div>Выбрать</div>
+        </div>
+        <div id="upload-button_{{ id }}" class="qq-upload-button-selector qq-upload-button">
+            <div>Загрузить</div>
+        </div>
+        <span class="qq-drop-processing-selector qq-drop-processing">
+                <span>Processing dropped files...</span>
+                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+            </span>
+        <ul class="qq-upload-list-selector qq-upload-list" role="region" aria-live="polite" aria-relevant="additions removals">
+            <li>
+                <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                <div class="qq-progress-bar-container-selector qq-progress-bar-container">
+                    <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                </div>
+                <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                <div class="qq-thumbnail-wrapper">
+                    <img class="qq-thumbnail-selector" qq-max-size="120" qq-server-scale>
+                </div>
+                <button type="button" class="qq-upload-cancel-selector qq-upload-cancel">X</button>
+                <button type="button" class="qq-upload-retry-selector qq-upload-retry">
+                    <span class="qq-btn qq-retry-icon" aria-label="Retry"></span>
+                    Retry
+                </button>
+
+                <div class="qq-file-info">
+                    <div class="qq-file-name">
+                        <span class="qq-upload-file-selector qq-upload-file"></span>
+                        <span class="qq-edit-filename-icon-selector qq-btn qq-edit-filename-icon" aria-label="Edit filename"></span>
+                    </div>
+                    <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                    <span class="qq-upload-size-selector qq-upload-size"></span>
+                    <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">
+                        <span class="qq-btn qq-delete-icon" aria-label="Delete"></span>
+                    </button>
+                    <button type="button" class="qq-btn qq-upload-pause-selector qq-upload-pause">
+                        <span class="qq-btn qq-pause-icon" aria-label="Pause"></span>
+                    </button>
+                    <button type="button" class="qq-btn qq-upload-continue-selector qq-upload-continue">
+                        <span class="qq-btn qq-continue-icon" aria-label="Continue"></span>
+                    </button>
+                </div>
+                <input type="text" class="title" style="width: 100%;">
+            </li>
+        </ul>
+
+        <dialog class="qq-alert-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">Close</button>
+            </div>
+        </dialog>
+
+        <dialog class="qq-confirm-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">No</button>
+                <button type="button" class="qq-ok-button-selector">Yes</button>
+            </div>
+        </dialog>
+
+        <dialog class="qq-prompt-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <input type="text">
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                <button type="button" class="qq-ok-button-selector">Ok</button>
+            </div>
+        </dialog>
+    </div>
+</script>
+
+<style media="screen">
+    .img-flex-wrapper,
+    .img-item {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .img-item {
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid lightgrey;
+        padding: 3px;
+        margin-right: 1rem;
+    }
+    .img-item img {
+        margin-bottom: 1rem;
+    }
+    .img-item input {
+        width: 100%;
+    }
+</style>
+<input id="album-name_{{ id }}" type="text" name="" value="{{ data.galleryName }}" placeholder="Название фотогалереи">
+<div class="img-flex-wrapper">
+    {% for img in data.images %}
+        <div class="img-item">
+            <a class="remove_{{ id }}" data-imgid="{{img.id}}" href="#test">Удалить картинку</a>
+            {{ smart_media_img(img.id, '200x200') }}
+            <input class="img-title_{{ id }}" id="title_{{img.id}}" type="text" name="" placeholder="Описание картинки" value="{{img.title}}">
+        </div>
+    {% endfor %}
+</div>
+
+<div id="uploader_{{ id }}"></div>
+
+<input type="text" name="{{ full_name }}" id="{{ id }}" class="form-control" value="{{ data|json_encode }}" style="visibility: hidden; height: 1px; box-sizing: border-box;">
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var galleryName = document.getElementById('album-name_{{ id }}').value;
+        {% if data is not empty %}
+        var jsonData = {{ data|json_encode }};
+        {% else %}
+        var jsonData = {
+            galleryName: galleryName,
+            images: []
+        };
+        {% endif %}
+        var galleryId = "{{ id }}";
+
+        $('#album-name_{{ id }}').change(function(){
+            jsonData.galleryName = $(this).val();
+            document.getElementById(galleryId).value = JSON.stringify(jsonData);
+            console.log(JSON.stringify(jsonData));
+        });
+
+        console.log(galleryName);
+
+        var uploader = new qq.FineUploader({
+            template: 'qq-template_{{ id }}',
+            element: document.getElementById("uploader_{{ id }}"),
+            autoUpload: false,
+            request: {
+                endpoint: '{{ path('smart.media.upload') }}'
+            },
+            retry: {
+                enableAuto: true
+            },
+            validation: {
+                allowedExtensions: ['png', 'jpeg', 'jpg']
+            },
+            callbacks: {
+                onComplete: complete()
+            }
+            /*
+              onStatusChange: function(oldStatus, newStatus) {
+                  console.log(newStatus)
+              }
+            */
+        });
+
+        qq(document.getElementById("upload-button_{{ id }}")).attach('click', function() {
+            uploader.uploadStoredFiles();
+        });
+        console.log(jsonData);
+
+        var titleList = document.querySelectorAll(".img-title_{{ id }}");
+
+        $(".remove_{{ id }}").click(function(){
+            var imgid = $(this).attr('data-imgid');
+            return remove(imgid, this);
+        });
+
+        function clearJson(id, jsonData, elem){
+            var i = 0;
+            for (i; jsonData.images[i].id != id; i++) {}
+            jsonData.images.splice(i,1);
+            document.getElementById(galleryId).value = JSON.stringify(jsonData);
+            elem.parentNode.style.display = "none";
+        }
+
+        function remove(id, elem) {
+            return $.ajax({
+                type: "GET",
+                url: "{{ path('smart.media.remove') }}?id=" + id,
+            })
+                .done(function(data, status, xhr){
+                    clearJson(id, jsonData, elem)
+                });
+        }
+
+        forEach(titleList, function(key, value) {
+            value.onchange = function(e) {
+                e.preventDefault;
+                var title2 = value.value;
+                jsonData.images[key]["title"] = title2;
+                document.getElementById(galleryId).value = JSON.stringify(jsonData);
+                console.log(JSON.stringify(jsonData));
+            };
+        });
+
+        /*
+        forEach(titleList, function(key, value) {
+            var title1 = value.value;
+            jsonData[key]["title"] = title1;
+        });
+        */
+        function forEach(data, callback) {
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    callback(key, data[key]);
+                }
+            }
+        }
+
+        document.getElementById(galleryId).value = JSON.stringify(jsonData);
+
+        function complete() {
+            return function(id, name, response) {
+                var fileContainer = this.getItemByFileId(id);
+                var titleInput = fileContainer.querySelector('.title');
+                var titleText = titleInput.value;
+                if (response.success = "true") {
+                    var data = response.data;
+                    forEach(data, function(key, value) {
+                        var id1 = value.id,
+                            jsd = {};
+                        jsd = {
+                            "id": id1,
+                            "title": titleText
+                        };
+
+                        jsonData.images.push(jsd);
+                    });
+                    document.getElementById(galleryId).value = JSON.stringify(jsonData);
+                    console.log(JSON.stringify(jsonData));
+                }
+            };
+        };
+    });
+</script>

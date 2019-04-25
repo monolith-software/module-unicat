@@ -1,0 +1,23 @@
+{% extends '@UnicatModule/Admin/_layout.html.twig' %}
+
+{% block title %}{{ 'Edit attribute'|trans }} &laquo;{{ form.vars.data.title }}&raquo; / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+        {% include '@UnicatModule/help/attributes.html.twig' %}
+
+        <h3>{{ 'Edit attribute'|trans }} &laquo;{{ form.vars.data.title }}&raquo;</h3>
+
+        <a href="../"><i class="fa fa-arrow-circle-o-left"></i> Назад к списку атрибутов</a>
+
+        {{ form(form, {'attr': {'class': 'form-horizontal well'}}) }}
+
+    </div>
+</div>
+
+    {% include '@CMS/_tool/ace_editor.html.twig' with {'form_element': 'unicat_attribute_params_yaml'} %}
+
+{% endblock content %}

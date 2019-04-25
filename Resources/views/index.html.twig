@@ -1,0 +1,38 @@
+
+{% if childenTaxons|length %}
+    <h4>Вложенные категории:</h4>
+
+    <ul>
+        {% for taxon in childenTaxons %}
+            <li><a href="{{ path('unicat.index', {'slug': taxon.slugFull}) }}/">{{ taxon }}</a></li>
+        {% endfor %}
+    </ul>
+    <hr />
+{% endif %}
+
+<p>Всего записей: <b>{{ pagerfanta.count }}</b>
+    {% if pagerfanta.haveToPaginate %} Страница: {{ pagerfanta.currentPage }} Записей на страницу: {{ pagerfanta.maxPerPage }}{% endif %}
+</p>
+
+{% for item in pagerfanta %}
+
+    {% include '@UnicatModule/item.html.twig' %}
+
+{% endfor %}
+
+{% if pagerfanta.haveToPaginate %}
+    Страница: {{ pagerfanta.currentPage }} Записей на страницу: {{ pagerfanta.maxPerPage }}
+
+    {% if slug %}
+        {% set pagerfantaRouteName = 'unicat.index' %}
+    {% else %}
+        {% set pagerfantaRouteName = 'unicat.root' %}
+    {% endif %}
+
+    {{ pagerfanta(pagerfanta, 'twitter_bootstrap_translated', {
+        'routeName': pagerfantaRouteName,
+        'routeParams': {'slug': slug},
+        'css_container_class': 'pagination pagination-centered',
+    })
+    }}
+{% endif %}

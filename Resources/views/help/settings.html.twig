@@ -1,0 +1,49 @@
+<a href="#showHelp" role="button" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#showHelp" style="float: right; margin-top: 8px;"><b>?</b> Справка</a>
+<div class="modal fade" id="showHelp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans }}"><span aria-hidden="true">&times;</span></button>
+                <h3 id="showHelpLabel">Справка по настройкам конфигурации</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 20%; white-space: nowrap;">Заголовок <em>*</em></td>
+                        <td>Любой текст.</td>
+                    </tr>
+                    <tr>
+                        <td>Наследуемость</td>
+                        <td>
+                            Включать записи вложенных таксонов.<br>
+                            <b>@todo</b> возможно лучше убрать в настройку таксономии.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Записей на страницу <em>*</em></td>
+                        <td>
+                            По умолчанию для всех категорий (таксонов) выводить заданное кол-во записей на страницу.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Медиа коллекция
+                        </td>
+                        <td>
+                            После того как выбрана медиа коллекция, больше её изменить нельзя.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Таксономия по умолчанию</td>
+                        <td>
+                            Применяется при обработке строки запросов и генерации хлебных крошек.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Close'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>

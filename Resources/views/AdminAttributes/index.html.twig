@@ -1,0 +1,64 @@
+{% extends '@UnicatModule/Admin/_layout.html.twig' %}
+
+{% block title %}{{ 'Attributes'|trans }} / {{ parent() }}{% endblock %}
+
+{% block content_header_wrapper %}
+    <div class="box-header with-border">
+        <a href="{{ path('unicat_admin.attributes_create', {'configuration': configuration.name}) }}" class="btn btn-success pull-right">
+            <i class="icon-plus icon-white"></i><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ 'Create attribute'|trans }}
+        </a>
+
+        <a href="{{ path('unicat_admin.attributes_group_create', {'configuration': configuration.name}) }}" class="btn btn-success pull-right" style="margin-right: 8px;">
+            <i class="icon-plus icon-white"></i><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ 'Create group'|trans }}
+        </a>
+
+        <ul class="nav nav-pills">
+            <li {% if group == 'ALL' %} class="active"{% endif %}><a href="{{ path('unicat_admin.attributes_index', {'configuration': configuration.name}) }}">Все</a></li>
+            {% for g in configuration.attributesGroups %}
+                <li {% if group == g.name %} class="active"{% endif %}><a href="{{ path('unicat_admin.attributes_index', {'configuration': configuration.name, 'group': g.name}) }}">{{ g.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content_header_wrapper %}
+
+{% block content_body %}
+    <table class="table table-bordered table-hover">
+        <thead><tr>
+            <th style="width: 1%;">id</th>
+            <th>{{ 'Title'|trans }}</th>
+            <th>{{ 'Name'|trans }}</th>
+            <th>{{ 'Type'|trans }}</th>
+            <th>{{ 'Position'|trans }}</th>
+            <th>{{ 'Is enabled'|trans }}</th>
+            <th>{{ 'Is required'|trans }}</th>
+            <th>{{ 'Show in'|trans }}</th>
+            <th>{{ 'Is dedicated table'|trans }}</th>
+            {#<th>{{ 'Created at'|trans }}</th>#}
+        </tr></thead>
+        <tbody>
+        {% for attr in attributes %}
+            <tr {% if not attr.enabled %} style="text-decoration: line-through;" {% endif %}>
+                <td>{{ attr.id }}</td>
+                <td>
+                    <a href="{{ path('unicat_admin.attributes_edit', {
+                        'configuration': attr.configuration.name,
+                        'name': attr.name,
+                    }) }}" title="{% for group in attr.groups %}{{ group.title }}, {% endfor %}">{{ attr.title }}</a>
+                </td>
+                <td>{{ attr.name }}</td>
+                <td>{{ attr.type }}</td>
+                <td>{{ attr.position }}</td>
+                <td>{{ attr.isEnabled }}</td>
+                <td>{{ attr.isRequired }}</td>
+                <td>
+                    {% if attr.showInAdmin %}<span class="label label-danger">admin</span>{% endif %}
+                    {% if attr.showInList  %}<span class="label label-primary">list</span>{% endif %}
+                    {% if attr.showInView  %}<span class="label label-success">view</span>{% endif %}
+                </td>
+                <td>{{ attr.isDedicatedTable }}</td>
+                {#<td>{{ attr.createdAt|format_date() }}</td>#}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

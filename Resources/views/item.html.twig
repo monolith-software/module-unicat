@@ -1,0 +1,59 @@
+{% set item_link = null %}
+
+{% for attr in attributes %}
+    {% if attr.isShowIn(mode) and item.hasAttribute(attr.name) %}
+        {# @todo сделать линки более универсальные #}
+        {% if attr.isLink and mode == 'list' %}
+            {% set is_found_default_taxonomy = false %}
+            {% for taxon in item.taxons %}
+                {% if configuration.defaultTaxonomy.id == taxon.taxonomy.id and is_found_default_taxonomy == false %}
+                    {{ attr.openTag }}
+                        <a href="{{ path('unicat.item_in_taxonomy', {'taxonomySlug': taxon.slugFull, 'itemSlug': item.slug}) }}">{{ item.attribute(attr.name) }}</a>
+                    {{ attr.closeTag }}
+                    {% set is_found_default_taxonomy = true %}
+                {% endif %}
+            {% endfor %}
+            {% if is_found_default_taxonomy == false %}
+                {% if attr.type == 'image' %}
+                    {{ attr.openTag }}<a href="{{ path('unicat.item', {'itemSlug': item.slug}) }}">{{ smart_media_img(item.attribute(attr.name), attr.params.filter) }}</a>{{ attr.closeTag }}
+                {% else %}
+                    {{ attr.openTag }}<a href="{{ path('unicat.item', {'itemSlug': item.slug}) }}">{{ item.attribute(attr.name) }}</a>{{ attr.closeTag }}
+                {% endif %}
+            {% endif %}
+        {% elseif attr.type == 'checkbox' %}
+            {{ attr.openTag }}{{ attr.title }}: {% if item.attribute(attr.name) %} да {% else %} нет {% endif %}{{ attr.closeTag }}
+        {% elseif attr.type == 'image' %}
+            {{ attr.openTag }}{{ smart_media_img(item.attribute(attr.name), attr.params.filter) }}{{ attr.closeTag }}
+        {% elseif attr.type == 'date' or attr.type == 'datetime' %}
+            {% if val is not empty %}
+                {{ attr.openTag }}
+                {{ item.attribute(attr.name)|format_date }}
+                {{ attr.closeTag }}
+            {% endif %}
+        {% elseif attr.type == 'gallery' %}
+            {{ attr.openTag }}
+            {% if attr.isShowTitle %}{{ attr.title }}: {% endif %}
+
+            {% for img in item.attribute(attr.name) %}
+                {{ smart_media_img(img.id, attr.params.filter) }}
+            {% endfor %}
+            {{ attr.closeTag }}
+        {% else %}
+            {{ attr.openTag }}
+            {% if attr.isShowTitle %}{{ attr.title }}: {% endif %}
+            {% set val = item.attribute(attr.name) %}
+            {% if val is iterable %}
+                <ul>
+                    {% for v in val  %}
+                        <li>{{ v }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                {{ val }}
+            {% endif %}
+            {{ attr.closeTag }}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+<hr />

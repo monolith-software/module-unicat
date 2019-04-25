@@ -1,0 +1,141 @@
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function(event) {
+
+    ymaps.ready(init);
+
+    function init() {
+        {% if data is empty %}
+      mapDate = ''
+        {% else %}
+      mapDate = '{{ data }}'
+      {% endif %};
+
+      document.getElementById("{{ id }}").value = mapDate;
+
+      var myMap = new ymaps.Map("map", {
+        center: [53.339115, 83.793780],
+        zoom: 12
+      }, {
+        searchControlProvider: 'yandex#search'
+      });
+
+      if (mapDate === '') {
+        // Создаем многоугольник без вершин.
+        var myPolygon = new ymaps.Polygon([], {}, {
+          // Курсор в режиме добавления новых вершин.
+          editorDrawingCursor: "crosshair",
+          // Максимально допустимое количество вершин.
+          editorMaxPoints: 20,
+          // Цвет заливки.
+          fillColor: '#00FF00',
+          // Цвет обводки.
+          strokeColor: '#0000FF',
+          // Ширина обводки.
+          strokeWidth: 5
+        });
+      } else {
+        var mapDateArr = mapDate.split(',');
+        var polygonCord = [];
+        var size = 2;
+        console.log(mapDateArr);
+        for (let i = 0; i <Math.ceil(mapDateArr.length/size); i++){
+          polygonCord[i] = mapDateArr.slice((i*size), (i*size) + size);
+        }
+        console.log(polygonCord);
+        var myPolygon = new ymaps.Polygon([polygonCord])
+      }
+
+      // Добавляем многоугольник на карту.
+      myMap.geoObjects.add(myPolygon);
+
+      // В режиме добавления новых вершин меняем цвет обводки многоугольника.
+      var stateMonitor = new ymaps.Monitor(myPolygon.editor.state);
+      stateMonitor.add("drawing", function (newValue) {
+        myPolygon.options.set("strokeColor", newValue ? '#FF0000' : '#0000FF');
+      });
+
+      // Включаем режим редактирования с возможностью добавления новых вершин.
+      myPolygon.editor.startDrawing();
+
+      myPolygon.geometry.events.add('change', function () {
+        document.getElementById("{{ id }}").value = myPolygon.geometry.getCoordinates().toString();
+        // console.log(myPolygon.geometry.getCoordinates().toString());
+      });
+    }
+
+
+    /*
+    $( document ).ready(function(){
+        ymaps.ready(init);
+        var myMap, myGeoObject, myCollection, {% if data is empty %}
+            mapDate = ''
+        {% else %}
+        mapDate = [{{ data }}]
+        {% endif %};
+
+        document.getElementById("{{ id }}").value = mapDate;
+
+        function init () {
+            myMap = new ymaps.Map("map", {
+                center:
+                    {% if data is empty %}
+                    [53.339115, 83.793780]
+                //        [54.979754,82.866072]
+                    {% else %}
+                        [{{ data }}]
+                    {% endif %},
+                zoom: 12
+            }, {
+                balloonMaxWidth: 200,
+                searchControlProvider: 'yandex#search'
+            });
+
+            myMap.behaviors.disable(['DblClickZoom']);
+
+            myCollection = new ymaps.GeoObjectCollection();
+
+
+            if (mapDate != '') {
+                myGeoObject = new ymaps.GeoObject({
+                    geometry: {
+                        type: "Point",
+                        coordinates: [mapDate[0], mapDate[1]]
+                    }
+                });
+                myMap.geoObjects.add(myCollection);
+                myCollection.add(myGeoObject);
+            }
+
+            myMap.events.add('click', function (e) {
+                mapDate = e.get('coords');
+                myGeoObject = new ymaps.GeoObject({
+                    geometry: {
+                        type: "Point",
+                        coordinates: [mapDate[0], mapDate[1]]
+                    }
+                });
+                myMap.geoObjects.add(myCollection);
+                if (myCollection.toArray().length != 0) {
+                    return false;
+                } else {
+                    myCollection.add(myGeoObject);
+                    document.getElementById("{{ id }}").value = mapDate;
+                }
+            });
+
+            myCollection.events.add('click', function (e) {
+                myCollection.remove(e.target);
+                mapDate = '';
+                document.getElementById("{{ id }}").value = mapDate;
+            });
+        }
+    });
+    */
+  });
+</script>
+
+<div id="map" style="height: 500px; width: 100%;">
+</div>
+<input type="text" name="{{ full_name }}" id="{{ id }}" class="form-control" value="{{ data|json_encode }}" style="visibility: hidden; height: 1px; box-sizing: border-box;">

@@ -1,0 +1,35 @@
+{% extends '@UnicatModule/Admin/configuration.html.twig' %}
+
+{% block title %}{{ 'Taxonomy'|trans }} &laquo;{{ taxonomy.title }}&raquo; / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+        <div class="row">
+
+        <div class="col-md-12">
+            <h3>{{ 'Taxonomy'|trans }} &laquo;{{ taxonomy.title }}&raquo;</h3>
+        </div>
+
+        <div class="span3 col-md-4">
+            {{ form(form, {'attr': {'class': 'form-horizontal well'} }) }}
+        </div>
+
+        <div class="span8 col-md-8">
+            {% set menuItem = knp_menu_get('UnicatModuleBundle:TaxonMenu:adminTree', [], {
+                'taxonClass': taxonomy.configuration.taxonClass,
+                'taxonomy': taxonomy
+            }) %}
+            {{ knp_menu_render(menuItem, {
+                'currentClass': 'active',
+                'clear_matcher': false,
+            }) }}
+        </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

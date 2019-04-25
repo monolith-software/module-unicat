@@ -1,0 +1,229 @@
+<?php
+
+namespace {{ namespace }};
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Monolith\Module\Unicat\Model\AbstractValueModel;
+use Monolith\Module\Unicat\Model\ItemModel;
+
+/**
+ * @ORM\Entity(repositoryClass="Monolith\Module\Unicat\Model\ItemRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="{{ table_prefix ~ configuration.name }}_items",
+ *      indexes={
+ *          @ORM\Index(columns={"position"}),
+ *      }
+ * )
+ */
+class Item extends ItemModel
+{
+    /**
+     * @var Taxon[]
+     *
+     * @ORM\ManyToMany(targetEntity="Taxon", inversedBy="items", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     * @ORM\JoinTable(name="{{ table_prefix ~ configuration.name }}_items_taxons_relations")
+     * @ORM\OrderBy({"position" = "ASC", "id" = "ASC"})
+     */
+    protected $taxons;
+
+    /**
+     * @var Taxon[]
+     *
+     * @ORM\ManyToMany(targetEntity="Taxon", inversedBy="itemsSingle", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     * @ORM\JoinTable(name="{{ table_prefix ~ configuration.name }}_items_taxons_single_relations")
+     * @ORM\OrderBy({"position" = "ASC", "id" = "ASC"})
+     */
+    protected $taxonsSingle;
+
+    /**
+     * ItemModel constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+    {%- for attr in configuration.attributes %}
+        {% if attr.itemsType is not null and attr.isItemsTypeMany2many %}
+
+
+        $this->attr_{{ attr.name }} = new ArrayCollection();
+        $this->children_{{ attr.name }} = new ArrayCollection();
+
+        {%- endif -%}
+    {% endfor %}
+
+    {%- for attr in configuration.attributes %}
+        {% if attr.itemsType is not null
+            and attr.type == 'unicat_item'
+            and attr.isDedicatedTable == false
+            and attr.isItemsTypeMany2many == false
+        %}
+
+        $this->children_{{ attr.name }} = new ArrayCollection();
+
+        {%- endif -%}
+    {% endfor %}
+
+    }
+
+    {%- for attr in configuration.attributes %}
+        {% if attr.itemsType is not null %}
+
+
+    // {{ attr.name }} ===============================================================================
+
+    {% if attr.isItemsTypeMany2many %}
+    /**
+     * @var Item[]
+     *
+     * @ORM\ManyToMany(targetEntity="Item", inversedBy="children_{{ attr.name }}", cascade={"persist"})
+     * @ORM\JoinTable(name="{{ table_prefix ~ configuration.name }}_items_type_{{ attr.name }}_relations")
+     */
+    protected $attr_{{ attr.name }};
+
+    /**
+     * @var Item[]
+     *
+     * @ORM\ManyToMany(targetEntity="Item", mappedBy="attr_{{ attr.name }}", fetch="EXTRA_LAZY")
+     */
+    protected $children_{{ attr.name }};
+
+    /**
+     * @return ArrayCollection|Item[]
+     */
+    public function getChildren_{{ attr.name }}()
+    {
+        return $this->children_{{ attr.name }};
+    }
+
+    /**
+     * @param Item ${{ attr.name }}
+     *
+     * @return $this
+     */
+    public function addAttr{{ attr.name }}(Item ${{ attr.name }})
+    {
+        if (!$this->attr_{{ attr.name }}->contains(${{ attr.name }})) {
+            $this->attr_{{ attr.name }}->add(${{ attr.name }});
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Item ${{ attr.name }}
+     *
+     * @return $this
+     */
+    public function removeAttr{{ attr.name }}(Item ${{ attr.name }})
+    {
+        if (!$this->attr_{{ attr.name }}->contains(${{ attr.name }})) {
+            $this->attr_{{ attr.name }}->removeElement(${{ attr.name }});
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Item[] ${{ attr.name }}
+     *
+     * @return $this
+     */
+    public function setAttr{{ attr.name }}(${{ attr.name }})
+    {
+        $this->attr_{{ attr.name }} = ${{ attr.name }};
+
+        return $this;
+    }
+
+    /**
+     * @return Item[]|ArrayCollection
+     */
+    public function getAttr{{ attr.name }}()
+    {
+        return $this->attr_{{ attr.name }};
+    }
+
+            {%- else -%}
+    /**
+     * @var Item
+     *
+     * @ORM\ManyToOne(targetEntity="Item", inversedBy="children_{{ attr.name }}")
+     * @ORM\JoinColumn(name="attr_{{ attr.name }}_id")
+     */
+    protected $attr_{{ attr.name }};
+
+    /**
+     * @var Item[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="attr_{{ attr.name }}", fetch="EXTRA_LAZY")
+     */
+    protected $children_{{ attr.name }};
+
+    /**
+     * @return ArrayCollection|Item[]
+     */
+    public function getChildren_{{ attr.name }}()
+    {
+        return $this->children_{{ attr.name }};
+    }
+
+    /**
+     * @param Item ${{ attr.name }}
+     *
+     * @return $this
+     */
+    public function setAttr{{ attr.name }}(Item ${{ attr.name }} = null)
+    {
+        $this->attr_{{ attr.name }} = ${{ attr.name }};
+
+        return $this;
+    }
+
+    /**
+     * @return Item|null
+     */
+    public function getAttr{{ attr.name }}()
+    {
+        return $this->attr_{{ attr.name }};
+    }
+
+            {%- endif -%}
+
+        {% elseif attr.isDedicatedTable %}
+
+
+    // {{ attr.name }} ===============================================================================
+
+    /**
+     * @var AbstractValueModel|null
+     *
+     * @ORM\OneToOne(targetEntity="Value{{ attr.nameCamelCase }}", mappedBy="item", fetch="EXTRA_LAZY")
+     */
+    protected $attr_{{ attr.name }}_value;
+
+    /**
+     * @param Item|null ${{ attr.name }}
+     *
+     * @return $this
+     */
+    public function setAttr{{ attr.name }}Value(Item ${{ attr.name }} = null)
+    {
+        $this->attr_{{ attr.name }}_value = ${{ attr.name }};
+
+        return $this;
+    }
+
+    /**
+     * @return AbstractValueModel|null
+     */
+    public function getAttr{{ attr.name }}Value(): ?AbstractValueModel
+    {
+        return $this->attr_{{ attr.name }}_value;
+    }
+
+        {%- endif -%}
+    {% endfor %}
+
+}

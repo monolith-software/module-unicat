@@ -1,0 +1,54 @@
+parameters:
+#    unicat.example.class: Monolith\Module\Unicat\Example
+
+services:
+    unicat:
+        class: Monolith\Module\Unicat\Service\UnicatService
+        public: true
+        arguments: [ '@doctrine', '@unicat.em', '@form.factory', '@smart_media', '@security.token_storage', '@event_dispatcher' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    unicat.em:
+        class: Monolith\Module\Unicat\Doctrine\UnicatEntityManager
+        public: true
+        arguments: [ '@doctrine.dbal.default_connection', '@doctrine.orm.default_configuration', '@doctrine.orm.default_entity_manager.event_manager']
+
+    unicat.form.type.item:
+        class: Monolith\Module\Unicat\Form\Type\ItemFormType
+        arguments: [ '@doctrine', '@unicat' ]
+        tags:
+            - { name: form.type }
+
+    unicat.form.type.taxon:
+        class: Monolith\Module\Unicat\Form\Type\TaxonFormType
+        arguments: [ '@doctrine' ]
+        tags:
+            - { name: form.type }
+
+    unicat.form.type.taxon_create:
+        class: Monolith\Module\Unicat\Form\Type\TaxonCreateFormType
+        arguments: [ '@doctrine' ]
+        tags:
+            - { name: form.type }
+
+    unicat.form.type.taxon_tree:
+        class: Monolith\Module\Unicat\Form\Tree\TaxonTreeType
+        arguments: [ '@doctrine' ]
+        tags:
+            - { name: form.type }
+
+# Listeners
+    unicat.controller.listener:
+        class: Monolith\Module\Unicat\Listener\ControllerListener
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onController }
+
+# Twig
+    unicatmodule.twig.unicat_extension:
+        class: Monolith\Module\Unicat\Twig\UnicatExtension
+        arguments: [ '@service_container' ]
+        tags:
+            - { name: twig.extension }

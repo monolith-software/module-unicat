@@ -1,0 +1,44 @@
+{% extends app.request.xmlHttpRequest or app.request.query.has('api')
+    ? '@UnicatModule/Admin/_item_form_content.html.twig'
+    : '@UnicatModule/Admin/_layout.html.twig'
+%}
+
+{% set item = form.vars.data %}
+
+{% block title %} {{ 'Record'|trans }} &laquo;{{ item.slug }}&raquo; / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+    {#<a style="float: right;" href="../"><i class="fa fa-arrow-circle-o-left"></i> назад к конфигурации &laquo;{{ configuration.title }}&raquo;</a>#}
+
+    <h2>{{ 'Record'|trans }} &laquo;{{ item.slug }}&raquo; из коллекции &laquo;{{ item.type.title }}&raquo;</h2>
+
+        {% for i in item.ParentItems %}
+            <p>Состоит в <a href="{{ path('unicat_admin.item_edit', {'id': i.id, 'configuration': i.type.configuration.name}) }}">{{ i.type.title }} - {{ i }}</a></p>
+        {% endfor %}
+
+        {% for item_type_child in itemsTypeschildren %}
+            <p>Включает записи <a href="{{ path('unicat_admin.configuration.items', {
+                    'configuration': configuration.name,
+                    'itemTypeId': item_type_child.id,
+                    'parent_id': item.id,
+                }) }}">{{ item_type_child.title }}</a></p>
+            <p><a href="{{ path('unicat_admin.item_create', {
+                    'configuration': item.type.configuration.name,
+                    'type': item_type_child.id,
+                    'parent_id': item.id,
+                }) }}" class="btn btn-success">
+                    <i class="icon-plus icon-white"></i><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    Добавить запись в коллекцию &laquo;{{ item_type_child.title }}&raquo;
+                </a></p>
+        {% endfor %}
+
+        {% include '@UnicatModule/Admin/_item_form_content.html.twig' %}
+
+    </div>
+</div>
+
+{% endblock content %}

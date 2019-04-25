@@ -1,0 +1,19 @@
+{
+    "name": "monolith-software/module-unicat",
+    "type": "monolith-cms-module",
+    "homepage": "http://monolith-cms.com",
+    "description": "Universal Catalog.",
+    "keywords": ["catalog"],
+    "version": "v0.1",
+    "time": "2017-12-20",
+    "license": "MIT",
+    "extra": {
+        "description_ru": "Универсальный каталог"
+    },
+    "require": {
+        "smart-core/media-bundle": "dev-master"
+    },
+    "autoload": {
+        "psr-4": { "Monolith\\Module\\Unicat\\": "" }
+    }
+}

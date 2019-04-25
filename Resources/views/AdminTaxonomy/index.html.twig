@@ -1,0 +1,47 @@
+{% extends '@UnicatModule/Admin/_layout.html.twig' %}
+
+{% block title %}{{ 'Taxonomy'|trans }} / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+    <a href="{{ path('unicat_admin.taxonomy_create', {'configuration': configuration.name}) }}" class="btn btn-success pull-right">
+        <i class="icon-plus icon-white"></i><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ 'Create'|trans }}
+    </a>
+
+    <h3>{{ 'Taxonomy'|trans }}</h3>
+
+    <table class="table table-bordered table-hover">
+        <thead><tr>
+            <th style="width: 1%;">id</th>
+            <th>{{ 'Title'|trans }}</th>
+            <th>{{ 'Is multiple entries'|trans }}</th>
+            <th>{{ 'Is required'|trans }}</th>
+            <th>{{ 'Is tree'|trans }}</th>
+            <th>{{ 'Created at'|trans }}</th>
+        </tr></thead>
+        <tbody>
+        {% for taxonomy in configuration.taxonomies %}
+            <tr>
+                <td>{{ taxonomy.id }}</td>
+                <td>
+                    <a href="{{ path('unicat_admin.taxonomy', {'name': taxonomy.name, 'configuration': configuration.name}) }}">{{ taxonomy.title }}</a>
+                    <a href="{{ path('unicat_admin.taxonomy_edit', {'name': taxonomy.name, 'configuration': configuration.name}) }}" style="float: right;" title="Редактирование таксономии">
+                        <i class="icon-edit" title="Edit"></i><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td>{{ taxonomy.isMultipleEntries }}</td>
+                <td>{{ taxonomy.isRequired }}</td>
+                <td>{{ taxonomy.isTree }}</td>
+                <td>{{ taxonomy.createdAt|format_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,23 @@
+<?php
+
+namespace {{ namespace }};
+
+use Doctrine\ORM\Mapping as ORM;
+use Monolith\Module\Unicat\Model\TaxonModel;
+
+/**
+ * @ORM\Entity(repositoryClass="Monolith\Module\Unicat\Model\TaxonRepository")
+ * @ORM\Table(name="{{ table_prefix ~ configuration.name }}_taxons",
+ *      indexes={
+ *          @ORM\Index(columns={"is_enabled"}),
+ *          @ORM\Index(columns={"position"})
+ *      },
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="slug_parent_taxonomy", columns={"slug", "parent_id", "taxonomy_id"}),
+ *          @ORM\UniqueConstraint(name="title_parent_taxonomy", columns={"title", "parent_id", "taxonomy_id"}),
+ *      }
+ * )
+ */
+class Taxon extends TaxonModel
+{
+}

@@ -1,0 +1,111 @@
+<a href="#showHelp" role="button" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#showHelp" style="float: right; margin-top: 8px;"><b>?</b> Справка</a>
+<div class="modal fade" id="showHelp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans }}"><span aria-hidden="true">&times;</span></button>
+                <h3 id="showHelpLabel">Справка по созданию и редактированию атрибута</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 20%; white-space: nowrap;">Заголовок <em>*</em></td>
+                        <td>Любой текст.</td>
+                    </tr>
+                    <tr>
+                        <td>Имя <em>*</em></td>
+                        <td><div class="alert alert-error"><b>Внимание!</b> Доступно только при создании атрибута.</div>
+                            Только латинские буквы в нижем регистре и символы подчеркивания. Будет создана сущность,
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Тип <em>*</em></td>
+                        <td><div class="alert alert-error"><b>Внимание!</b> Доступно только при создании атрибута.</div></td>
+                    </tr>
+                    <tr>
+                        <td>Items type</td>
+                        <td><div class="alert alert-error"><b>Внимание!</b> Доступно только при создании атрибута.</div>
+                            Только если выбран <strong>Тип = Unicat Item</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Is items type many2many</td>
+                        <td><div class="alert alert-error"><b>Внимание!</b> Доступно только при создании атрибута.</div>
+                            Только если выбран <strong>Items type</strong>, тогда создаются связи тима M-to-M
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Params yaml'|trans }}</td>
+                        <td>
+                            <p>Атрибуты формы:</p>
+                        <pre>form:
+    attr:
+        class: 'wysiwyg'
+        data-theme: 'advanced'
+                        </pre>
+
+                            <p>Для <b>image</b> можно задать фильтр:</p>
+                            <pre>filter: 300x300</pre>
+
+                            <p><b>choice</b>:</p>
+                            <pre>form:
+    choices:
+        Item #1: 1
+        Item #2: 2</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Is dedicated table'|trans }}</td>
+                        <td>
+                            <div class="alert alert-error"><b>Внимание!</b> Доступно только при создании атрибута.</div>
+                            Создать таблицу для хранения значений, которая будет служить для поиска по этому атрибуту.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Update all records with default value'|trans }}</td>
+                        <td>Если данные размещаются в выделенной таблице, то по умолчанию заполнить заданным значением.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Is primary'|trans }}</td>
+                        <td>@todo</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Is link'|trans }}</td>
+                        <td>Создавать ссылку за запись, используется в шаблоне по умолчанию.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Is required'|trans }}</td>
+                        <td>Обязателен для заполнения.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Is show title'|trans }}</td>
+                        <td>Показывать заголовок атрибута, используется в шаблоне по умолчанию.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Show in admin'|trans }}</td>
+                        <td>Показывать в таблице админа.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Show in list'|trans }}</td>
+                        <td>Показывать пользователям в списках записей.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Show in view'|trans }}</td>
+                        <td>Показывать пользователям при просмотре записи.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Open tag'|trans }}</td>
+                        <td>Открывающий HTML код.</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Close tag'|trans }}</td>
+                        <td>Закрывающий HTML код.</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Close'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>

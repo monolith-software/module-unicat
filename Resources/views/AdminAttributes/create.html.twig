@@ -1,0 +1,21 @@
+{% extends '@UnicatModule/Admin/configuration.html.twig' %}
+
+{% block title %}{{ 'Create attribute'|trans }} / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+        {% include '@UnicatModule/help/attributes.html.twig' %}
+
+        <h3>{{ 'Create attribute'|trans }}</h3>
+
+        {{ form(form, {'attr': {'class': 'form-horizontal well'}}) }}
+
+        {% include '@CMS/_tool/ace_editor.html.twig' with {'form_element': 'unicat_attribute_params_yaml'} %}
+
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ namespace }};
+
+use Doctrine\ORM\Mapping as ORM;
+use Monolith\Module\Unicat\Model\ItemModel;
+use Monolith\Module\Unicat\Model\Value{{ type }}Model;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="{{ table_prefix ~ configuration.name ~ '_values__' ~ name }}",
+ *      indexes={
+ *          @ORM\Index(columns={"value"}),
+ *      }
+ * )
+ */
+class Value{{ name_camel_case }} extends Value{{ type }}Model
+{
+    /**
+     * @var ItemModel
+     *
+     * @ORM\Id
+     * @ORM\OneToOne(targetEntity="Item", inversedBy="attr_{{ name }}_value", fetch="EXTRA_LAZY")
+     */
+    protected $item;
+}

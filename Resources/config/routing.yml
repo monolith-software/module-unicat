@@ -1,0 +1,28 @@
+
+unicat.root:
+    path: /
+    defaults:
+        _controller: UnicatModuleBundle:Unicat:index
+
+unicat.item_in_taxonomy:
+    path: /{taxonomySlug}/{itemSlug}.html
+    defaults:
+        _controller: UnicatModuleBundle:Unicat:item
+    requirements:
+        itemSlug: '.+'
+        taxonomySlug: '.+'
+
+unicat.item:
+    path: /{itemSlug}.html
+    defaults:
+        _controller: UnicatModuleBundle:Unicat:item
+    requirements:
+        itemSlug: '.+'
+
+unicat.index:
+    path: /{slug}
+    defaults:
+        _controller: UnicatModuleBundle:Unicat:index
+        slug: null
+    requirements:
+        slug: '.+'

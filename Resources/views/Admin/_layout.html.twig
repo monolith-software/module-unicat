@@ -1,0 +1,45 @@
+{% extends '@CMS/admin.html.twig' %}
+
+{% if configuration is not defined %}
+    {% set configuration = unicat_current_configuration() %}
+{% endif %}
+
+{% block title %}&laquo;{{ configuration.title }}&raquo; / Unicat / {{ parent() }}{% endblock %}
+
+{% block page_description -%}
+    {{ 'Module'|trans }}
+    <!-- Content Header (Page header) -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-gear"></i>
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu __dropdown-menu-right">
+            <li><a href="{{ path('unicat_admin') }}">{{ 'All configurations'|trans }}</a></li>
+        </ul>
+    </div>
+
+    {#{{ parent() }}#}
+{% endblock %}
+
+
+{% block page_header 'Unicat'|trans %}
+{#{% block page_description 'Module'|trans %}#}
+
+{% block content_top %}
+
+    {% set __selected_inheritance = app.request.attributes.get('__selected_inheritance') %}
+    {% set __si = app.request.attributes.set('__selected_inheritance', false) %}
+
+    {% set configurationMenu = knp_menu_get('UnicatModuleBundle:UnicatAdminMenu:configuration', [], {
+        'configuration': configuration,
+    }) %}
+
+    {{ knp_menu_render(configurationMenu, {
+        'currentClass': 'active',
+        'clear_matcher': false,
+    }) }}
+
+    {% set __si = app.request.attributes.set('__selected_inheritance', __selected_inheritance) %}
+
+{% endblock content_top %}

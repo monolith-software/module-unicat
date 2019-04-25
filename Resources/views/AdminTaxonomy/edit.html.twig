@@ -1,0 +1,19 @@
+{% extends '@UnicatModule/Admin/configuration.html.twig' %}
+
+{% block title %}{{ 'Taxonomy edit'|trans }} &laquo;{{ form.vars.data.title }}&raquo; / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+    <h3>{{ 'Taxonomy edit'|trans }}: &laquo;{{ form.vars.data.title }}&raquo;</h3>
+
+    {{ form(form, {'attr': {'class': 'form-horizontal well'}}) }}
+
+    </div>
+</div>
+
+    {% include '@CMS/_tool/ace_editor.html.twig' with {'form_element': 'unicat_taxonomy_properties'} %}
+
+{% endblock content %}

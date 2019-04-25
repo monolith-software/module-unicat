@@ -1,0 +1,17 @@
+{% extends '@UnicatModule/Admin/configuration.html.twig' %}
+
+{% block title %}{{ 'Item types create'|trans }} / {{ parent() }}{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+
+    <h3>{{ 'Item types create'|trans }}</h3>
+
+    {{ form(form, {'attr': {'class': 'form-horizontal well'}}) }}
+
+    </div>
+</div>
+
+{% endblock content %}
