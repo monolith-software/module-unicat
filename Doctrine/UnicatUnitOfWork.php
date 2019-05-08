@@ -2,6 +2,29 @@
 
 declare(strict_types=1);
 
+/**
+ * Original file Doctrine\ORM\UnitOfWork
+ * Monolith Unicat Patch on lines: 2716, 2718, 2728, 2757
+ */
+
+/*
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software consists of voluntary contributions made by many individuals
+ * and is licensed under the MIT license. For more information, see
+ * <http://www.doctrine-project.org>.
+ */
+
 namespace Monolith\Module\Unicat\Doctrine;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,11 +39,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\ListenersInvoker;
+use Doctrine\ORM\Event;
+use Doctrine\ORM\Event\OnClearEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\Internal;
+use Doctrine\ORM\Internal\CommitOrderCalculator;
 use Doctrine\ORM\Internal\HydrationCompleteHandler;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Reflection\ReflectionPropertiesGetter;
@@ -2686,18 +2713,9 @@ class UnicatUnitOfWork implements PropertyChangedListener
                         }
 
                         // Inverse side of x-to-one can never be lazy
-
-                        if ($assoc['fetch'] !== ClassMetadata::FETCH_EXTRA_LAZY) {
+                        if ($assoc['fetch'] !== ClassMetadata::FETCH_EXTRA_LAZY) { // Unicat Patch
                             $class->reflFields[$field]->setValue($entity, $this->getEntityPersister($assoc['targetEntity'])->loadOneToOneEntity($assoc, $entity));
-                        }
-
-
-//                        dump($class);
-//                        ld($class->reflFields[$field]);
-//                        ld($assoc);
-//                        ld($class->reflFields[$field]->getDocComment());
-//
-//                        die;
+                        } // Unicat Patch
 
                         continue 2;
                     }
@@ -2707,7 +2725,7 @@ class UnicatUnitOfWork implements PropertyChangedListener
                         $class->reflFields[$field]->setValue($entity, $data[$field]);
                         $this->originalEntityData[$oid][$field] = $data[$field];
 
-                        continue;
+                        continue; // Unicat Patch
                     }
 
                     $associatedId = [];
@@ -2736,7 +2754,7 @@ class UnicatUnitOfWork implements PropertyChangedListener
                         $class->reflFields[$field]->setValue($entity, null);
                         $this->originalEntityData[$oid][$field] = null;
 
-                        continue;
+                        continue; // Unicat Patch
                     }
 
                     if ( ! isset($hints['fetchMode'][$class->name][$field])) {
