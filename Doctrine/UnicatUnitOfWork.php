@@ -2725,7 +2725,7 @@ class UnicatUnitOfWork implements PropertyChangedListener
                         $class->reflFields[$field]->setValue($entity, $data[$field]);
                         $this->originalEntityData[$oid][$field] = $data[$field];
 
-                        continue; // Unicat Patch
+                        continue 2; // Unicat Patch
                     }
 
                     $associatedId = [];
@@ -2754,7 +2754,7 @@ class UnicatUnitOfWork implements PropertyChangedListener
                         $class->reflFields[$field]->setValue($entity, null);
                         $this->originalEntityData[$oid][$field] = null;
 
-                        continue; // Unicat Patch
+                        continue 2; // Unicat Patch
                     }
 
                     if ( ! isset($hints['fetchMode'][$class->name][$field])) {
