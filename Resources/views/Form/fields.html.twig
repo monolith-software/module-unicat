@@ -3,7 +3,7 @@
 {% endblock %}
 
 {% block unicat_attribute_image_widget %}
-    {% spaceless %}
+    {% apply spaceless %}
     {% if data is not empty %}
         {{ smart_media_img(data, '100x100') }}
         <input type="checkbox" name="_delete_[{{ name }}]" id="{{ id ~ 'remove'}}"/>
@@ -13,7 +13,7 @@
     {% endif %}
 
     {{ block('form_widget_simple') }}
-    {% endspaceless %}
+    {% endapply %}
 {% endblock %}
 
 {% block unicat_attribute_gallery_widget %}
